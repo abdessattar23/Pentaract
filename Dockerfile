@@ -4,7 +4,16 @@
 
 FROM rust:1.75-slim AS chef
 WORKDIR /app
-RUN cargo install cargo-chef
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    pkg-config \
+    libssl-dev \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN cargo install cargo-chef --version 0.1.67
+
 
 FROM chef AS planner
 COPY ./pentaract .
