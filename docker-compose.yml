@@ -15,8 +15,7 @@ services:
     build: .
     env_file:
       - .env
-    ports:
-      - ${PORT}:8000
+    # ports removed: let Coolify proxy handle it
     restart: unless-stopped
     depends_on:
       - db
