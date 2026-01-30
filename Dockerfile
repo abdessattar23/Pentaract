@@ -2,7 +2,8 @@
 #### SERVER (Rust)
 ############################################################################################
 
-FROM rust:1.75-slim AS chef
+FROM rust:1.75-slim AS builder
+
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
@@ -12,18 +13,10 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-RUN cargo install cargo-chef --version 0.1.67
-
-
-FROM chef AS planner
 COPY ./pentaract .
-RUN cargo chef prepare --recipe-path recipe.json
 
-FROM chef AS builder
-COPY --from=planner /app/recipe.json recipe.json
-RUN cargo chef cook --release --recipe-path recipe.json
-COPY ./pentaract .
 RUN cargo build --release
+
 
 ############################################################################################
 #### UI
